@@ -21,14 +21,18 @@ public class User {
     private LocalDateTime siteDate = LocalDateTime.now();
 
     @ManyToOne
+    @JoinColumn(name = "davlat_id")
     private Country country;
 
     @ManyToOne
+    @JoinColumn(name = "obl_id")
     private Region region;
 
     private boolean resident;
 
     private Integer printerId;
+
+    private LocalDateTime reg_date;
 
     private LocalDateTime arrivalTime;
 }
