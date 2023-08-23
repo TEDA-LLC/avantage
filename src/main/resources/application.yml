@@ -1,5 +1,9 @@
 server:
   port: 73
+  ssl:
+    enabled: true
+    certificate: /etc/letsencrypt/live/api.teda.uz/fullchain.pem
+    certificate-private-key: /etc/letsencrypt/live/api.teda.uz/privkey.pem
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/avantage1
