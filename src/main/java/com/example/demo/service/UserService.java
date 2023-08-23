@@ -34,6 +34,7 @@ public class UserService {
     private final AttachmentRepository attachmentRepository;
 
     public ApiResponse<?> register(UserDTO dto) {
+        System.err.println("\n\n\n\n" + dto.toString() + "\n\n\n\n");
         User user = new User();
         user.setFio(dto.getFio());
         user.setEmail(dto.getEmail());
