@@ -33,7 +33,6 @@ public class UserService {
     private final CountryRepository countryRepository;
     private final AttachmentRepository attachmentRepository;
 
-    @SneakyThrows
     public ApiResponse<?> register(UserDTO dto) {
         User user = new User();
         user.setFio(dto.getFio());
@@ -62,6 +61,7 @@ public class UserService {
                         success(false).
                         build();
             }
+            user.setCountry(countryOptional.get());
         }
         User save = userRepository.save(user);
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
@@ -75,7 +75,15 @@ public class UserService {
             }
             Attachment attachment = new Attachment();
             attachment.setSize(photo.getSize());
-            attachment.setBytes(photo.getBytes());
+            try {
+                attachment.setBytes(photo.getBytes());
+            } catch (IOException e) {
+                return ApiResponse.builder().
+                        message("Photo content type not supported!").
+                        status(400).
+                        success(false).
+                        build();
+            }
             attachment.setContentType(photo.getContentType());
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));
