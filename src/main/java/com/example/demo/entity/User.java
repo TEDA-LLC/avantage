@@ -35,4 +35,10 @@ public class User {
     private LocalDateTime reg_date;
 
     private LocalDateTime arrivalTime;
+
+    private boolean photo;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(nullable = true)
+    private Attachment attachment;
 }
