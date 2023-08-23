@@ -2,15 +2,20 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.entity.Attachment;
 import com.example.demo.entity.Country;
 import com.example.demo.entity.Region;
 import com.example.demo.entity.User;
+import com.example.demo.repository.AttachmentRepository;
 import com.example.demo.repository.CountryRepository;
 import com.example.demo.repository.RegionRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,6 +31,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RegionRepository regionRepository;
     private final CountryRepository countryRepository;
+    private final AttachmentRepository attachmentRepository;
 
     @SneakyThrows
     public ApiResponse<?> register(UserDTO dto) {
@@ -59,14 +65,25 @@ public class UserService {
         }
         User save = userRepository.save(user);
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
+            MultipartFile photo = dto.getPhoto();
             String outputPath = "src\\main\\resources\\photos\\" + save.getId() + ".jpg";
             try {
-                BufferedImage image = bytesToImage(dto.getPhoto().getBytes());
+                BufferedImage image = bytesToImage(photo.getBytes());
                 saveImage(image, outputPath);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Attachment attachment = new Attachment();
+            attachment.setSize(photo.getSize());
+            attachment.setBytes(photo.getBytes());
+            attachment.setContentType(photo.getContentType());
+            attachment.setOriginalName(photo.getOriginalFilename());
+            save.setAttachment(attachmentRepository.save(attachment));
+            save.setPhoto(true);
+        }else {
+            save.setPhoto(false);
         }
+        userRepository.save(save);
         return ApiResponse.builder().
                 message("Registered").
                 success(true).
@@ -82,5 +99,21 @@ public class UserService {
     public static void saveImage(BufferedImage image, String outputPath) throws IOException {
         File outputImage = new File(outputPath);
         ImageIO.write(image, "jpg", outputImage); // Change the format as needed
+    }
+
+    public ResponseEntity<?> getPhoto(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found!!!");
+        }
+        User user = userOptional.get();
+        if (!user.isPhoto() || user.getAttachment() == null){
+            return ResponseEntity.badRequest().body("Photo not found!!!");
+        }
+        Attachment attachment = user.getAttachment();
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(attachment.getContentType()))
+                .contentLength(attachment.getSize())
+                .body(attachment.getBytes());
     }
 }
