@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -15,10 +15,12 @@ public class CorsConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("**") // Allow access from any domain
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedOrigins("*")
+                .allowedMethods("POST", "GET", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization")
+                .exposedHeaders("X-Auth-Token")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 
 //    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
