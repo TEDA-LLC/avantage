@@ -36,8 +36,7 @@ public class User {
 
     private LocalDateTime arrivalTime;
 
-    @Column(nullable = true)
-    private boolean photo;
+    private boolean photo = true;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = true)

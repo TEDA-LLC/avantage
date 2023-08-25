@@ -1,7 +1,7 @@
 server:
   port: 73
   ssl:
-    enabled: true
+    enabled: false
     certificate: /etc/letsencrypt/live/api.teda.uz/fullchain.pem
     certificate-private-key: /etc/letsencrypt/live/api.teda.uz/privkey.pem
 spring:

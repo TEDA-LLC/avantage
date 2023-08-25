@@ -42,6 +42,7 @@ public class UserService {
         user.setLavozim(dto.getLavozim());
         user.setTel(dto.getTel());
         user.setTashkilot(dto.getTashkilot());
+        user.setResident(dto.isResident());
         if (dto.isResident()){
             Optional<Region> regionOptional = regionRepository.findById(dto.getRegionId());
             if (regionOptional.isEmpty()){
