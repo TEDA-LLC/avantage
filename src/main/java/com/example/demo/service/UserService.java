@@ -68,8 +68,9 @@ public class UserService {
         User save = userRepository.save(user);
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
             MultipartFile photo = dto.getPhoto();
-//            String outputPath = "src\\main\\resources\\photos\\" + save.getId() + ".jpg";
-            String outputPath = "projects\\photos\\" + save.getId() + ".jpg";
+            String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
+//            String outputPath = "projects\\photos\\" + save.getId() + fileType;
+            String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
             try {
                 BufferedImage image = bytesToImage(photo.getBytes());
                 saveImage(image, outputPath);
