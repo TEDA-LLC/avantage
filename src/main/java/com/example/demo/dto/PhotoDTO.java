@@ -22,4 +22,6 @@ public class PhotoDTO {
 
     private byte[] bytes;
 
+    private String img;
+
 }

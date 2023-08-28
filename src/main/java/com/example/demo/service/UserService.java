@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -72,15 +73,17 @@ public class UserService {
             String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
 //            String outputPath = "projects\\photos\\" + save.getId() + fileType;
             String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
+            Base64.Decoder decoder = Base64.getDecoder();
             try {
-                BufferedImage image = bytesToImage(photo.getBytes());
+                BufferedImage image = bytesToImage(decoder.decode(photo.getImg()));
                 saveImage(image, outputPath);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Attachment attachment = new Attachment();
             attachment.setSize(photo.getSize());
-            attachment.setBytes(photo.getBytes());
+//            attachment.setBytes(photo.getBytes());
+            attachment.setBytes(decoder.decode(photo.getImg()));
             attachment.setContentType(photo.getContentType());
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));

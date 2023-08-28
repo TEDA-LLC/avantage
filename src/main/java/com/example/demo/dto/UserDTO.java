@@ -3,8 +3,6 @@ package com.example.demo.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serializable;
-
 /**
  * DTO for {@link com.example.demo.entity.User}
  */

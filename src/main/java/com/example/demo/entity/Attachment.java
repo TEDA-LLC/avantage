@@ -28,4 +28,7 @@ public class Attachment {
     @Column(nullable = false)
     private String originalName, contentType;
     private Long size;
+
+    @Column(length = 6541100)
+    private String img;
 }
