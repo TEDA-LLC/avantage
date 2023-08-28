@@ -16,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> register(@ModelAttribute UserDTO dto){
+    public ResponseEntity<?> register(@RequestBody UserDTO dto){
         ApiResponse<?> response = userService.register(dto);
         return ResponseEntity.status(response.getStatus()).body(response);
 
