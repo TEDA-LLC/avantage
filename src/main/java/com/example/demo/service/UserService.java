@@ -68,13 +68,13 @@ public class UserService {
         }
         User save = userRepository.save(user);
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            PhotoDTO photo = dto.getPhoto();
+            MultipartFile photo = dto.getPhoto();
             String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
 //            String outputPath = "projects\\photos\\" + save.getId() + fileType;
             String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
             Base64.Decoder decoder = Base64.getDecoder();
             try {
-                BufferedImage image = bytesToImage(decoder.decode(photo.getImg()));
+                BufferedImage image = bytesToImage(decoder.decode(dto.getImg()));
                 saveImage(image, outputPath);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -82,8 +82,16 @@ public class UserService {
             Attachment attachment = new Attachment();
             attachment.setSize(photo.getSize());
 //            attachment.setBytes(photo.getBytes());
-            attachment.setBytes(decoder.decode(photo.getImg()));
-            attachment.setContentType(photo.getContentType());
+            try {
+                attachment.setBytes(photo.getBytes());
+            } catch (IOException e) {
+                return ApiResponse.builder().
+                        message("Photo type is not supported!").
+                        status(400).
+                        success(false).
+                        build();
+            }
+            attachment.setContentType("image/" + fileType.substring(1));
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));
             save.setPhoto(true);
@@ -119,7 +127,7 @@ public class UserService {
         }
         Attachment attachment = user.getAttachment();
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("image/" + attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".") + 1)))
+                .contentType(MediaType.valueOf(attachment.getContentType()))
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
