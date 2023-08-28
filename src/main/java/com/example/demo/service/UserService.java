@@ -45,9 +45,9 @@ public class UserService {
         user.setTel(dto.getTel());
         user.setTashkilot(dto.getTashkilot());
         user.setResident(dto.isResident());
-        if (dto.isResident()){
+        if (dto.isResident()) {
             Optional<Region> regionOptional = regionRepository.findById(dto.getRegionId());
-            if (regionOptional.isEmpty()){
+            if (regionOptional.isEmpty()) {
                 return ApiResponse.builder().
                         message("Region not found!").
                         status(400).
@@ -55,10 +55,9 @@ public class UserService {
                         build();
             }
             user.setRegion(regionOptional.get());
-        }
-        else {
+        } else {
             Optional<Country> countryOptional = countryRepository.findById(dto.getCountryId());
-            if (countryOptional.isEmpty()){
+            if (countryOptional.isEmpty()) {
                 return ApiResponse.builder().
                         message("Country not found!").
                         status(400).
@@ -88,7 +87,7 @@ public class UserService {
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));
             save.setPhoto(true);
-        }else {
+        } else {
             save.setPhoto(false);
         }
         userRepository.save(save);
@@ -115,12 +114,12 @@ public class UserService {
             return ResponseEntity.badRequest().body("User not found!!!");
         }
         User user = userOptional.get();
-        if (!user.isPhoto() || user.getAttachment() == null){
+        if (!user.isPhoto() || user.getAttachment() == null) {
             return ResponseEntity.badRequest().body("Photo not found!!!");
         }
         Attachment attachment = user.getAttachment();
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(attachment.getContentType()))
+                .contentType(MediaType.valueOf("image/" + attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".") + 1)))
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
