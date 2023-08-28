@@ -24,6 +24,6 @@ public class UserDTO {
     private Long regionId;
     private boolean resident;
 
-    private MultipartFile photo;
+    private PhotoDTO photo;
 
 }

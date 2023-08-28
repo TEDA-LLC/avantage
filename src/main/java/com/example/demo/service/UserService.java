@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ApiResponse;
+import com.example.demo.dto.PhotoDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.Attachment;
 import com.example.demo.entity.Country;
@@ -67,7 +68,7 @@ public class UserService {
         }
         User save = userRepository.save(user);
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            MultipartFile photo = dto.getPhoto();
+            PhotoDTO photo = dto.getPhoto();
             String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
 //            String outputPath = "projects\\photos\\" + save.getId() + fileType;
             String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
@@ -79,15 +80,7 @@ public class UserService {
             }
             Attachment attachment = new Attachment();
             attachment.setSize(photo.getSize());
-            try {
-                attachment.setBytes(photo.getBytes());
-            } catch (IOException e) {
-                return ApiResponse.builder().
-                        message("Photo content type not supported!").
-                        status(400).
-                        success(false).
-                        build();
-            }
+            attachment.setBytes(photo.getBytes());
             attachment.setContentType(photo.getContentType());
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));
