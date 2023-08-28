@@ -91,7 +91,7 @@ public class UserService {
                         success(false).
                         build();
             }
-            attachment.setContentType("image/" + fileType.substring(1));
+            attachment.setContentType(photo.getContentType());
             attachment.setOriginalName(photo.getOriginalFilename());
             save.setAttachment(attachmentRepository.save(attachment));
             save.setPhoto(true);
@@ -127,7 +127,7 @@ public class UserService {
         }
         Attachment attachment = user.getAttachment();
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(attachment.getContentType()))
+                .contentType(MediaType.valueOf("image/" +  attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".")+1)))
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
