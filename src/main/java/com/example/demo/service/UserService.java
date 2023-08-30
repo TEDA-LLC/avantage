@@ -132,7 +132,8 @@ public class UserService {
         }
         Attachment attachment = user.getAttachment();
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("image/" + attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".") + 1)))
+                .contentType(attachment.getContentType().startsWith("image/") ? MediaType.valueOf(attachment.getContentType())
+                        : MediaType.valueOf("image/" + attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".") + 1)))
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
