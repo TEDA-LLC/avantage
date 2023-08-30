@@ -71,7 +71,7 @@ public class UserService {
             MultipartFile photo = dto.getPhoto();
             String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
 //            String outputPath = "projects\\photos\\" + save.getId() + fileType;
-            String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
+            String outputPath = "photos\\" + save.getId() + fileType;
             Base64.Decoder decoder = Base64.getDecoder();
             try {
                 BufferedImage image;
