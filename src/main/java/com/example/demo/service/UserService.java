@@ -75,7 +75,7 @@ public class UserService {
             Base64.Decoder decoder = Base64.getDecoder();
             try {
                 BufferedImage image;
-                if (dto.getImg() != null || !dto.getImg().isEmpty() || !dto.getImg().equals("")) {
+                if (dto.getImg() != null && !dto.getImg().isEmpty()) {
                     image = bytesToImage(decoder.decode(dto.getImg()));
                 } else {
                     image = bytesToImage(photo.getBytes());
