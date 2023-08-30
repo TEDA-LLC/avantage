@@ -74,7 +74,12 @@ public class UserService {
             String outputPath = "src\\main\\resources\\photos\\" + save.getId() + fileType;
             Base64.Decoder decoder = Base64.getDecoder();
             try {
-                BufferedImage image = bytesToImage(decoder.decode(dto.getImg()));
+                BufferedImage image;
+                if (!dto.getImg().isEmpty() || !dto.getImg().equals("")) {
+                    image = bytesToImage(decoder.decode(dto.getImg()));
+                } else {
+                    image = bytesToImage(photo.getBytes());
+                }
                 saveImage(image, outputPath);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -127,7 +132,7 @@ public class UserService {
         }
         Attachment attachment = user.getAttachment();
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("image/" +  attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".")+1)))
+                .contentType(MediaType.valueOf("image/" + attachment.getOriginalName().substring(attachment.getOriginalName().indexOf(".") + 1)))
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
