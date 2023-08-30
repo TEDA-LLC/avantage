@@ -71,11 +71,11 @@ public class UserService {
             MultipartFile photo = dto.getPhoto();
             String fileType = photo.getOriginalFilename().substring(photo.getOriginalFilename().indexOf("."));
 //            String outputPath = "projects\\photos\\" + save.getId() + fileType;
-            String outputPath = "photos\\" + save.getId() + fileType;
+            String outputPath = save.getId() + fileType;
             Base64.Decoder decoder = Base64.getDecoder();
             try {
                 BufferedImage image;
-                if (!dto.getImg().isEmpty() || !dto.getImg().equals("")) {
+                if (dto.getImg() != null || !dto.getImg().isEmpty() || !dto.getImg().equals("")) {
                     image = bytesToImage(decoder.decode(dto.getImg()));
                 } else {
                     image = bytesToImage(photo.getBytes());
