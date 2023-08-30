@@ -80,7 +80,7 @@ public class UserService {
                 } else {
                     image = bytesToImage(photo.getBytes());
                 }
-                saveImage(image, outputPath);
+                saveImage(image, outputPath, fileType);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -116,9 +116,9 @@ public class UserService {
         return ImageIO.read(bis);
     }
 
-    public static void saveImage(BufferedImage image, String outputPath) throws IOException {
+    public static void saveImage(BufferedImage image, String outputPath, String fileType) throws IOException {
         File outputImage = new File(outputPath);
-        ImageIO.write(image, "jpg", outputImage); // Change the format as needed
+        ImageIO.write(image, fileType.substring(1), outputImage); // Change the format as needed
     }
 
     public ResponseEntity<?> getPhoto(Integer id) {
