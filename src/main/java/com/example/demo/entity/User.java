@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +38,8 @@ public class User {
     private LocalDateTime arrivalTime;
 
     private boolean photo = true;
+
+    private String qrCode = UUID.randomUUID().toString();
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = true)

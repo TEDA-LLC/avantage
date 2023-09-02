@@ -11,6 +11,11 @@ import com.example.demo.repository.AttachmentRepository;
 import com.example.demo.repository.CountryRepository;
 import com.example.demo.repository.RegionRepository;
 import com.example.demo.repository.UserRepository;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
@@ -21,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
@@ -103,6 +109,49 @@ public class UserService {
         } else {
             save.setPhoto(false);
         }
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix;
+        try {
+            bitMatrix = qrCodeWriter.encode(save.getQrCode(), BarcodeFormat.QR_CODE, 500, 500);
+        } catch (WriterException e) {
+            return ApiResponse.builder().
+                    message("Something went wrong when qrcode generated!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
+        String qrCodeOutputPath = "photos/qrcode/" + save.getId() + ".jpg";
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        try {
+            MatrixToImageWriter.writeToStream(bitMatrix, "JPEG", pngOutputStream);
+        } catch (IOException e) {
+            return ApiResponse.builder().
+                    message("Something went wrong!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
+        byte[] jpgData = pngOutputStream.toByteArray();
+        BufferedImage qrcode;
+        try {
+             qrcode = bytesToImage(jpgData);
+        } catch (IOException e) {
+            return ApiResponse.builder().
+                    message("Something went wrong when qrcode parsed to image!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
+        try {
+            saveImage(qrcode, qrCodeOutputPath, ".jpg");
+        } catch (IOException e) {
+            return ApiResponse.builder().
+                    message("Something went wrong when qrcode saved!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
         userRepository.save(save);
         return ApiResponse.builder().
                 message("Registered").
@@ -118,7 +167,7 @@ public class UserService {
 
     public static void saveImage(BufferedImage image, String outputPath, String fileType) throws IOException {
         File outputImage = new File(outputPath);
-        ImageIO.write(image, fileType.substring(1), outputImage); // Change the format as needed
+        ImageIO.write(image, fileType.substring(1), outputImage);
     }
 
     public ResponseEntity<?> getPhoto(Integer id) {
