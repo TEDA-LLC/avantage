@@ -186,4 +186,38 @@ public class UserService {
                 .contentLength(attachment.getSize())
                 .body(attachment.getBytes());
     }
+
+    public ApiResponse<User> getOne(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            return ApiResponse.<User>builder().
+                    message("User not found!!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
+        return ApiResponse.<User>builder().
+                message("Here!!!").
+                status(200).
+                success(true).
+                data(userOptional.get()).
+                build();
+    }
+
+    public ApiResponse<User> getByQrcode(String qr) {
+        Optional<User> userOptional = userRepository.findByQrCode(qr);
+        if (userOptional.isEmpty()) {
+            return ApiResponse.<User>builder().
+                    message("User not found!!!").
+                    status(400).
+                    success(false).
+                    build();
+        }
+        return ApiResponse.<User>builder().
+                message("Here!!!").
+                status(200).
+                success(true).
+                data(userOptional.get()).
+                build();
+    }
 }

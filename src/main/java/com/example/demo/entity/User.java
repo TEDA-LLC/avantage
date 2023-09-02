@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,5 +44,6 @@ public class User {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = true)
+    @JsonIgnore
     private Attachment attachment;
 }
