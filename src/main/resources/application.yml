@@ -1,4 +1,6 @@
 server:
+  tomcat:
+    max-http-form-post-size: 20MB
   port: 73
   ssl:
     enabled: false
